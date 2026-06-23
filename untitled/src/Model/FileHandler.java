@@ -1,7 +1,8 @@
 package Model;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 public class FileHandler {
 
@@ -18,22 +19,20 @@ public class FileHandler {
         }
     }
 
-    public static void loadPath(String path, Model model) {
-        model.clear();
-        try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
 
+
+    public static void loadPath(String path, Model model) throws IOException {
+        model.clear();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
             String line;
             while ((line = reader.readLine()) != null) {
-
                 String[] parts = line.split(",");
-                double x = Double.parseDouble(parts[0]);
-                double y = Double.parseDouble(parts[1]);
-
-                model.addPoint(x, y);
+                model.addPoint(
+                        Double.parseDouble(parts[0]),
+                        Double.parseDouble(parts[1])
+                );
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

@@ -15,7 +15,10 @@ public class Enemy {
     }
 
     public void update(double deltaTime, java.util.List<Double> xPoints, java.util.List<Double> yPoints) {
-        if (currentTargetIndex >= xPoints.size()) return;
+        if (currentTargetIndex >= xPoints.size()){
+
+            return;
+        }
 
         double targetX = xPoints.get(currentTargetIndex)-10;
         double targetY = yPoints.get(currentTargetIndex)-10;

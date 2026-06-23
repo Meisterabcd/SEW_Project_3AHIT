@@ -6,10 +6,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.animation.AnimationTimer;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +32,11 @@ public class Controller implements Initializable {
 
     //Enemy Variablen
     private double spawnTimer = 0;
-    private double spawnDelay = 1.4;
-    private int enemiesToSpawn = 10;
+    private double spawnDelay = 0.2;
+    private int enemiesToSpawn = 100;
     private AnimationTimer gameLoop;
     private long lastTime = 0;
-    private int enemySpeed = 90;
+    private int enemySpeed = 80;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -44,10 +47,22 @@ public class Controller implements Initializable {
 
         draw();
 
-        fileManager.loadPath("path.txt", model);
+        try {
+            FileHandler.loadPath("path.txt", model);
+        } catch (FileNotFoundException e) {
+            showError("Datei nicht gefunden", "path.txt wurde nicht gefunden.");
+        } catch (IOException e) {
+            showError("Fehler", "Die Datei konnte nicht gelesen werden.");
+        }
         drawTrack();
-
-
+    }
+    private void showError(String header, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Fehler");
+        alert.setHeaderText(header);
+        alert.setContentText(message);
+        alert.showAndWait();
+        startBtn.setVisible(false);
     }
     private void draw() {
         GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -126,10 +141,20 @@ public class Controller implements Initializable {
                     e.update(deltaTime, xPoints, yPoints);
                 }
 
+                double endX = xPoints.get(xPoints.size() - 1);
+                double endY = yPoints.get(yPoints.size() - 1);
+
+                enemies.removeIf(e -> {
+                    double dx = e.getX() - endX;
+                    double dy = e.getY() - endY;
+
+                    return Math.sqrt(dx * dx + dy * dy) < enemySpeed/4;
+                });
                 render();
             }
         };
 
         gameLoop.start();
     }
+
 }
