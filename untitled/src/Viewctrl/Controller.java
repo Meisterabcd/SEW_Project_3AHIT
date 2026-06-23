@@ -10,18 +10,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.animation.AnimationTimer;
-import javafx.scene.shape.Rectangle;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
-    private int money = 100;
-    private int wave = 0;
-
-
     @FXML
     private Canvas canvas;
 
@@ -29,39 +23,31 @@ public class Controller implements Initializable {
     private Button startBtn;
 
     private Model model;
-    private Enemy en;
     private FileHandler fileManager;
     private List<Enemy> enemies = new ArrayList<>();
-    private double spawnTimer = 0;
-    private double spawnDelay = 1.4; // 1 Sekunde zwischen Spawns
-    private int enemiesToSpawn = 10;
 
+
+    //Enemy Variablen
+    private double spawnTimer = 0;
+    private double spawnDelay = 1.4;
+    private int enemiesToSpawn = 10;
     private AnimationTimer gameLoop;
     private long lastTime = 0;
-
-    @FXML
-    private Label money_label;
-
-    @FXML
-    private Label wave_label;
-
     private int enemySpeed = 90;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         model = new Model();
-        fileManager = new FileHandler();   // <- hinzufügen
-
+        fileManager = new FileHandler();
         canvas.setWidth(1480);
         canvas.setHeight(1020);
-
-        money_label.setText(String.valueOf(money));
-        wave_label.setText(String.valueOf(wave));
 
         draw();
 
         fileManager.loadPath("path.txt", model);
         drawTrack();
+
+
     }
     private void draw() {
         GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -101,6 +87,7 @@ public class Controller implements Initializable {
                 gc.fillOval(e.getX() - 5, e.getY() - 5, 30, 30);
         }
     }
+
     @FXML
     void startGame(ActionEvent event) {
         startBtn.setVisible(false);
